@@ -8,9 +8,12 @@ public class PlayerMouseControl : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private float moveSpeed = 10;
     
+    
     private CharacterController characterController;
     private Vector3 targetPosition;
     private Animator animator;
+
+    
     
     // Start is called before the first frame update
     void Start()
@@ -23,8 +26,13 @@ public class PlayerMouseControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GetComponent<PlayerHealth>().CurrentHealth < 1)
+        {
+            return;
+        }
+        
         float distToTarget = Vector3.Distance(transform.position, targetPosition);
-        if (distToTarget > 1f)
+        if (distToTarget > 0.7f)
         {
             Vector3 targetDirection = Vector3.Normalize(targetPosition - transform.position);
             characterController.Move(targetDirection * moveSpeed * Time.deltaTime);
@@ -45,6 +53,11 @@ public class PlayerMouseControl : MonoBehaviour
                 Debug.Log("hit: " + hit.collider.name);
                 targetPosition = hit.point;
             }
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            animator.SetTrigger("Stab");
         }
     }
 }
